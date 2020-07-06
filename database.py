@@ -25,18 +25,18 @@ def get_counties(state):
     conn = sqlite3.connect('census-information')
     curs = conn.cursor()
     counties = curs.execute(f'select * from {state}')
-    return counties
+    return counties.fetchall()
 
-def create_dataset(table_name, data):
+def create_dataset(table_name):
     conn = sqlite3.connect('census-information')
     curs = conn.cursor()
-    curs.execute('create table if not exists {table_name} (year char primary key, data char)')
+    curs.execute(f'create table if not exists{table_name}(year char primary key, data char, countyid int)')
     conn.commit()
 
 def populate_dataset(table_name, data):
     conn = sqlite3.connect('census-information')
     curs = conn.cursor()
-    curs.executemany('insert into {table_name} (?,?)' data)
+    curs.execute(f'insert into {table_name} (?,?)' (data[0], data[1]))
     conn.commit()
 
 def create_state_database(stateid, statename):
@@ -47,10 +47,12 @@ def create_state_database(stateid, statename):
 
 def create_county_database(statename):
     conn = sqlite3.connect('census-information')
+    print('connected to db')
     curs = conn.cursor()
     sqltxn = f'create table if not exists {statename}(stateid int, statename char, countyid int primary key, countyname text, foreign key (stateid) references states(stateid))'
+    print(sqltxn)
     curs.execute(sqltxn)
-    #conn.commit()
+    conn.commit()
 
 def create_states():
     conn = sqlite3.connect('census-information')
@@ -90,9 +92,3 @@ def create_counties():
         create_county_database(state[1].replace(' ',''))
         populate_county(f'{state[0]:02}')
 
-
-'''
-create table states(stateid int primary key, statename char(30));
-create table counties(countyid int primary key, countyname char(30), stateid int, foreign key (stateid) references states(stateid));
-create table rental_vacancies(year int, vacancy int, countyid int, foreign key (countyid) references counties (countyid));
-'''
