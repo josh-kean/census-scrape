@@ -30,7 +30,7 @@ def get_counties(state):
 def create_dataset(table_name):
     conn = sqlite3.connect('census-information')
     curs = conn.cursor()
-    curs.execute(f'create table if not exists{table_name}(year char primary key, data char, countyid int)')
+    curs.execute(f'create table if not exists {table_name}(year char primary key, data char, countyid int)')
     conn.commit()
 
 def populate_dataset(table_name, data):
