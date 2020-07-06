@@ -13,8 +13,42 @@ tables = {
         'C': c.comparison_profiles,
         }
 
+def get_table(arg):
+    if arg[:3] == 'S02':
+        data_set = c.population_profiles
+    elif arg[:3] == 'S01':
+        data_set = c.subject_tables
+    else:
+        data_set = tables[arg[0]]
+    return data_set
+
+def process_arg(arg):
+    data_set = get_table(arg)
+    for year in years:
+        for state in states:
+            stateid = f'{state[0]:02}'
+            try:
+                region = f'county:*&in=state:{stateid}'
+                result = data_set(get=f'NAME,{arg}', year=year, region=region)
+                print(result)
+            except Exception as e:
+                print(e)
+                continue
+            for r in result[1:]:
+                countyid = r[2]
+                countyname = ''.join([x for x in r[0].split(',')[0] if x.isalpha()])
+                statename = ''.join([x for x in r[0].split(',')[1] if x.isalpha()])
+                table_name = f'{arg}_{countyname}'
+                database.create_dataset(table_name, stateid) #takes in result information 
+                data_input = [year, 0 if r[1] == None else r[1], countyid, int(stateid)]
+                print(data_input)
+                database.populate_dataset(table_name, data_input)
+            
+
 if __name__ == '__main__':
     for arg in arguments:
+        process_arg(arg)
+    '''
         #get the argument and call appropriate api
         if arg[:3] == 'S02':
             data_set = c.population_profiles
@@ -41,11 +75,11 @@ if __name__ == '__main__':
                         #call function from database to make new table and populate new table
                         if result[1][0] == None:
                             result[1][0] = 0
-                        table_name = f'{arg.replace("_","")}{countyname}'
-                        print('this works: ',table_name, result[1])
-                        database.create_dataset(table_name) #takes in result information 
-                        print('made table')
-                        #print('after create_dataset, arg: ',arg)
-                        #database.populate_dataset(table_name, )
+                        table_name = f'{arg}_{countyname}'
+                        database.create_dataset(table_name, stateid) #takes in result information 
+                        data_input = [year, result[1][0], int(county), int(stateid)]
+                        print(data_input)
+                        database.populate_dataset(table_name, data_input)
                 except Exception as e:
                     print(e)
+                    '''
