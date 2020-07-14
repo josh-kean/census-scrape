@@ -45,8 +45,12 @@ def get_counties(curs,state):
 
 #creates a table with specific census values
 @sql_connect
-def create_dataset(curs,table_name, stateid):
-    sqlTxn = f'create table if not exists {table_name}(year int, data char, countyid int, stateid int, foreign key (stateid) references states(stateid))'
+def create_data_table(curs,table_name, stateid, countyid, data):
+    #data is a 2d array where x[0] is dataset name and x[1] is datatype
+    #make a string of all data types and floats
+    dat_columns = ','.join([f' {x[0]} decimal' for x in data]
+    #tablename should be group_county_state
+    sqlTxn = f'create table if not exists {table_name}(year int, {dat_columns}, stateid int, foreign key (stateid) references states(stateid))'
     curs.execute(sqlTxn)
 
 #takes a specific uscensus variable and populates a table with it
