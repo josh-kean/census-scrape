@@ -11,7 +11,8 @@ def detailed_tables(get='B01001_001E', year='2018', region='state:02'):
     return data
 
 def subject_tables(get, year, region):
-    result = url.urlopen(f'https://api.census.gov/data/{year}/acs/acs1/subject?get={get}&for={region}&key={api_key}')
+    urlCall = f'https://api.census.gov/data/{year}/acs/acs1/subject?get={get}&for={region}&key={api_key}'
+    result = url.urlopen(urlCall)
     return json.loads(result.read())
 
 def data_profiles(get, year, region):
