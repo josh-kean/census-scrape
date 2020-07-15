@@ -7,7 +7,7 @@ arguments = [x.upper() for x in sys.argv[1:]]
 years = range(2011, 2019) #range does not include 2019
 states = database.get_states()
 
-tables = [,'comparison_prifile.csv','data_profiles.csv','detailed_tables.csv','get_variables.py','selected_population_profiles.csv','subject_tables.csv']
+tables = ['comparison_prifile.csv','data_profiles.csv','detailed_tables.csv','get_variables.py','selected_population_profiles.csv','subject_tables.csv']
 
 
 def process_arg(arg):

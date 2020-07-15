@@ -6,9 +6,8 @@ class sql_connect:
         self.curs = self.conn.cursor()
         self.func = func
     def __call__(self, *args):
-        result = self.func(self.curs, *args)
+        self.func(self.curs, *args)
         self.conn.commit()
-        return result
 
 
 @sql_connect
