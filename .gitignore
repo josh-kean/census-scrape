@@ -1,0 +1,7 @@
+combined_pickles/
+formatted_data/
+group_data/
+main.py
+pickle_groups/
+split_pickles/
+venv/
